@@ -4,8 +4,8 @@
     "private": true,
     "dependencies": {
         "csv": "0.4.0",
-        "mongodb": "1.4.8",
-        "underscore": "1.6.0",
-        "moment": "2.8.1"
+        "mongodb": "1.4.10",
+        "underscore": "1.7.0",
+        "moment": "2.8.3"
     }
 }
