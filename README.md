@@ -1,6 +1,10 @@
 MongoDb Aggregation Framework In Action !
 =========================================
 
+# How to import datasets?
+
+This is very simple! All you have to do is tu run the script `run-all-importers.sh`
+
 # Campings dataset
 
 ## Group by ranking
