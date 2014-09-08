@@ -1,53 +1,56 @@
 MongoDb Aggregation Framework In Action !
 =========================================
 
-# Campings
+# Campings dataset
 
-## Groupement par classement
+## Group by ranking
 
-Requête :
+Query :
 
     db.campings.aggregate([
-        {$group : {_id : "$classement", total : {$sum : 1}}}
+        {$group : {_id : "$ranking", total : {$sum : 1}}}
     ])
 
-Résultat :
+Results :
 
     { "_id" : "5 étoiles", "total" : 177 }
-    { "_id" : "1 étoile", "total" : 389 }
-    { "_id" : "2 étoiles", "total" : 1681 }
     { "_id" : "4 étoiles", "total" : 940 }
     { "_id" : "3 étoiles", "total" : 2224 }
+    { "_id" : "2 étoiles", "total" : 1681 }
+    { "_id" : "1 étoile", "total" : 389 }
 
-## Top 5 des villes avec le plus de campings
+## Top 5 cities with the highest number of campings
 
-Requête :
+Query :
 
     db.campings.aggregate([
-        {$group : {_id : "$commune", total : {$sum : 1}}},
+        {$group : {_id : "$city", total : {$sum : 1}}},
         {$sort : {total : -1}},
-        {$limit : 10}
+        {$limit : 5},
+        {$project: {_id: 0, city : "$_id", total: 1}}
     ])
 
-Résultat :
+Results :
 
-    { "_id" : "ARGELÈS-SUR-MER", "total" : 32 }
+    { "_id" : "ARGELÈS-SUR-MER", "total" : 29 }
     { "_id" : "AGDE", "total" : 23 }
     { "_id" : "VIAS", "total" : 20 }
     { "_id" : "SAINT-JEAN-DE-MONTS", "total" : 20 }
     { "_id" : "LES MATHES", "total" : 17 }
 
-## Nombre de villes n'ayant qu'un seul camping
+## Number of cities with only one camping
 
-Requête :
+Query :
 
     db.campings.aggregate([
-        {$group : {_id : "$commune", total : {$sum : 1}}},
+        {$group : {_id : "$city", total : {$sum : 1}}},
         {$match : {total : 1}},
-        {$group: {_id: null, count: {$sum: 1 }}}
+        {$group: {_id: null, count: {$sum: 1 }}},
+        {$project: {_id: 0, count: 1}}
     ])
 
-Resultat :
+Results :
 
-    { "_id" : null, "count" : 2802 }
+    { "count" : 2802 }
+
 
