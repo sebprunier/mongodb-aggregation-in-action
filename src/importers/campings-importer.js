@@ -10,7 +10,7 @@ var conf = require('../../conf/conf');
 
 var MongoClient = mongodb.MongoClient;
 
-MongoClient.connect(conf.MONGO_URL, function (err, db) {
+MongoClient.connect(conf.mongodb.url, function (err, db) {
     if (err) throw err;
 
     var campings = db.collection('campings');
