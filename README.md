@@ -29,46 +29,55 @@ db.campings.aggregate([
 
 Results:
 
-    { "_id" : "5 étoiles", "total" : 177 }
-    { "_id" : "4 étoiles", "total" : 940 }
-    { "_id" : "3 étoiles", "total" : 2224 }
-    { "_id" : "2 étoiles", "total" : 1681 }
-    { "_id" : "1 étoile", "total" : 389 }
+```javascript
+{ "_id" : "5 étoiles", "total" : 177 }
+{ "_id" : "4 étoiles", "total" : 940 }
+{ "_id" : "3 étoiles", "total" : 2224 }
+{ "_id" : "2 étoiles", "total" : 1681 }
+{ "_id" : "1 étoile", "total" : 389 }
+```
 
 ## Top 5 cities with the highest number of campings
 
 Query:
 
-    db.campings.aggregate([
-        {$group : {_id : "$city", total : {$sum : 1}}},
-        {$sort : {total : -1}},
-        {$limit : 5},
-        {$project: {_id: 0, city : "$_id", total: 1}}
-    ])
+```javascript
+db.campings.aggregate([
+    {$group : {_id : "$city", total : {$sum : 1}}},
+    {$sort : {total : -1}},
+    {$limit : 5},
+    {$project: {_id: 0, city : "$_id", total: 1}}
+])
+```
 
 Results:
 
-    { "_id" : "ARGELÈS-SUR-MER", "total" : 29 }
-    { "_id" : "AGDE", "total" : 23 }
-    { "_id" : "VIAS", "total" : 20 }
-    { "_id" : "SAINT-JEAN-DE-MONTS", "total" : 20 }
-    { "_id" : "LES MATHES", "total" : 17 }
+```javascript
+{ "_id" : "ARGELÈS-SUR-MER", "total" : 29 }
+{ "_id" : "AGDE", "total" : 23 }
+{ "_id" : "VIAS", "total" : 20 }
+{ "_id" : "SAINT-JEAN-DE-MONTS", "total" : 20 }
+{ "_id" : "LES MATHES", "total" : 17 }
+```
 
 ## Number of cities with only one camping
 
 Query:
 
-    db.campings.aggregate([
-        {$group : {_id : "$city", total : {$sum : 1}}},
-        {$match : {total : 1}},
-        {$group: {_id: null, count: {$sum: 1 }}},
-        {$project: {_id: 0, count: 1}}
-    ])
+```javascript
+db.campings.aggregate([
+    {$group : {_id : "$city", total : {$sum : 1}}},
+    {$match : {total : 1}},
+    {$group: {_id: null, count: {$sum: 1 }}},
+    {$project: {_id: 0, count: 1}}
+])
+```
 
 Results:
 
-    { "count" : 2802 }
-
+```javascript
+{ "count" : 2802 }
+```
 
 # Marvel Comics dataset
 
@@ -76,49 +85,57 @@ Results:
 
 Query:
 
-    db.comics.aggregate([
-        {$match : {"characters.returned" : {$gt : 0}}},
-        {$project : {title : 1, characters : 1}},
-        {$unwind : "$characters.items"},
-        {$group : {_id : "$characters.items.name", total : {$sum : 1}}},
-        {$sort : {total : -1}},
-        {$limit : 5}
-    ])
+```javascript
+db.comics.aggregate([
+    {$match : {"characters.returned" : {$gt : 0}}},
+    {$project : {title : 1, characters : 1}},
+    {$unwind : "$characters.items"},
+    {$group : {_id : "$characters.items.name", total : {$sum : 1}}},
+    {$sort : {total : -1}},
+    {$limit : 5}
+])
+```
 
 Results:
 
-    {"_id": "Spider-Man","total": 2413}
-    {"_id": "X-Men","total": 2320}
-    {"_id": "Iron Man","total": 1904}
-    {"_id": "Wolverine","total": 1594}
-    {"_id": "Captain America","total": 1367}
+```javascript
+{"_id": "Spider-Man","total": 2413}
+{"_id": "X-Men","total": 2320}
+{"_id": "Iron Man","total": 1904}
+{"_id": "Wolverine","total": 1594}
+{"_id": "Captain America","total": 1367}
+```
 
 
 ## Create the `characters` collection from the `comics` collection
 
 Query:
 
-    db.comics.aggregate([
-        {$match : {"characters.returned" : {$gt : 0}}},
-        {$project : {title : 1, characters : 1}},
-        {$unwind : "$characters.items"},
-        {$group : {_id : "$characters.items.name", total : {$sum : 1}, comics : {$push : {id : "$_id", title : "$title"}}}},
-        {$out : "characters"}
-    ])
+```javascript
+db.comics.aggregate([
+    {$match : {"characters.returned" : {$gt : 0}}},
+    {$project : {title : 1, characters : 1}},
+    {$unwind : "$characters.items"},
+    {$group : {_id : "$characters.items.name", total : {$sum : 1}, comics : {$push : {id : "$_id", title : "$title"}}}},
+    {$out : "characters"}
+])
+```
 
 Results (`findOne()` query from the `characters` collection):
 
+```javascript
+{
+  "_id": "Frog-Man",
+  "total": 2,
+  "comics": [
     {
-      "_id": "Frog-Man",
-      "total": 2,
-      "comics": [
-        {
-          "id": 38126,
-          "title": "Spider-Man: New York Stories (Trade Paperback)"
-        },
-        {
-          "id": 39753,
-          "title": "Spider-Island: Avengers (2011) #1"
-        }
-      ]
+      "id": 38126,
+      "title": "Spider-Man: New York Stories (Trade Paperback)"
+    },
+    {
+      "id": 39753,
+      "title": "Spider-Island: Avengers (2011) #1"
     }
+  ]
+}
+```
