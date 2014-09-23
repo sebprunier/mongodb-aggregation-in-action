@@ -21,9 +21,11 @@ For more details, see [developer.marvel.com](http://developer.marvel.com/)
 
 Query:
 
-    db.campings.aggregate([
-        {$group : {_id : "$ranking", total : {$sum : 1}}}
-    ])
+```javascript
+db.campings.aggregate([
+    {$group : {_id : "$ranking", total : {$sum : 1}}}
+])
+```
 
 Results:
 
